@@ -1,0 +1,74 @@
+@page "/readme"
+@layout MainLayout
+
+<h2>How GitHub Copilot Helped Build EventEaseApp</h2>
+<p>
+GitHub Copilot accelerated development by:
+</p>
+<ol>
+    <li>Generating initial data models and reusable UI components.</li>
+    <li>Automating CRUD logic for events and attendee registrations.</li>
+    <li>Building advanced UI features (sortable/searchable tables, modals, attendee management).</li>
+    <li>Integrating browser storage for persistent state.</li>
+    <li>Enhancing UI/UX with icons, tooltips, and modern styling.</li>
+    <li>Guiding robust validation, error handling, and resolving build/runtime issues.</li>
+    <li>Suggesting performance optimizations and best practices.</li>
+    <li>Assisting with unit test setup and GitHub Actions for CI.</li>
+    <li>Providing documentation, improvement suggestions, and guiding major refactors.</li>
+</ol>
+<p>
+Copilot served as a coding assistant, reviewer, and problem solver—enabling rapid, high-quality development and learning.
+</p>
+<hr />
+<h2>Portfolio Case Study: EventEaseApp</h2>
+<p><strong>Project Overview:</strong><br />
+EventEaseApp is a Blazor web application for managing events and attendee registrations. The project was built iteratively with Copilot, focusing on clean architecture, robust features, and a modern user experience.</p>
+
+<h3>Main Steps Taken</h3>
+<ol>
+    <li><strong>Project Setup & Data Modeling</strong><br />
+        Created the initial Event data model and foundational UI components.<br />
+        Set up navigation and page routing for Events, Attendee Registration, and Session Tracker.
+    </li>
+    <li><strong>Feature Development</strong><br />
+        Implemented event CRUD operations and attendee registration workflows.<br />
+        Added sortable/searchable event tables, modal forms, and attendee management features.<br />
+        Integrated browser storage for events, registrations, and session state.
+    </li>
+    <li><strong>UI/UX Enhancements</strong><br />
+        Added Bootstrap icons, tooltips, and custom CSS for a polished interface.<br />
+        Used modal dialogs for forms and confirmations to streamline user interactions.
+    </li>
+    <li><strong>Validation, Error Handling & Testing</strong><br />
+        Developed robust form validation, including custom date validation logic.<br />
+        Diagnosed and resolved build/runtime errors with Copilot’s guidance.<br />
+        Added lightweight unit tests for core services and migration logic.
+    </li>
+    <li><strong>Refactoring & Best Practices</strong><br />
+        Refactored large components into smaller, reusable pieces.<br />
+        Adopted stable identifiers for data relationships and centralized route management.<br />
+        Hardened browser storage handling and improved code organization.
+    </li>
+    <li><strong>DevOps & Documentation</strong><br />
+        Configured GitHub Actions for automated test runs.<br />
+        Documented Copilot’s contributions and project structure for future maintainers.
+    </li>
+</ol>
+
+<h3>Key Copilot Prompts Used</h3>
+<blockquote>Good day! I'm building a new app called EventEaseApp which will assist the company EventEase to manage event details like event name, date, and location. The app should seamlessly navigate between pages like a master list of events, event details when a particular event is selected, and to register participants for the event. Please start by creating the appropriate data model and an event card that will act as the foundation for the application.</blockquote>
+<blockquote>Please include a button on the Events page to allow the user to enter a new Event. Also provide the ability for the user to edit the details for an existing event or delete it altogether.</blockquote>
+<blockquote>On the Events page, please display the existing events in table format, rather than the card format. Keep the card format for adding or editing events. Please include the ability to sort the event list by any of the three fields and provide search capability for the user to find specific event(s).</blockquote>
+<blockquote>Please implement handlers for the sorting functionality on the Event List page. Also please implement handlers for the search functionality.</blockquote>
+<blockquote>Please add a "Calendar" icon to the navigation menu for the "Events" feature</blockquote>
+<blockquote>Can you update the date validation functionality to only validate the date after the user enters all three parts (month, date, and year) rather than validating each date part?</blockquote>
+<blockquote>Please make the add/edit form a modal pop up rather than inline on the event list page</blockquote>
+<blockquote>Can you add a button to clear search criteria? I'd like it to be in-line and to the right of the search fields in the "Actions" column.</blockquote>
+<blockquote>Please add tool tips to the buttons. Also, please move the user registration button to the registered user's list. For existing registrations, include a delete button to the user registration form itself, hide the delete button if this is a new registration. And finally, please add a confirm/cancel modal pop-up to verify registration deletions.</blockquote>
+<blockquote>Please ensure this code follows current best practices. Please provide suggestions for improvement before implementing them so I can learn for future projects.</blockquote>
+<blockquote>Yes, please proceed with adding some lightweight unit tests on the service layer and migration logic. It would also be great to replace the string literals with centralized route constraints.</blockquote>
+<blockquote>Can you assist me in creating a GitHub repository for this application?</blockquote>
+
+<hr />
+<p><strong>Summary:</strong><br />
+EventEaseApp demonstrates how Copilot can accelerate full-stack web development, from initial scaffolding to advanced features, testing, and deployment. Copilot’s suggestions, code generation, and problem-solving support enabled rapid iteration and high-quality results.</p>
