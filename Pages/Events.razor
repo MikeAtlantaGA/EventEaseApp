@@ -1,0 +1,90 @@
+@page "/"
+@page "/events"
+
+@using EventEaseApp.Components
+
+<PageTitle>Events</PageTitle>
+
+<h1>Event List</h1>
+
+<button class="btn btn-success mb-3" @onclick="ShowNewEventForm" data-bs-toggle="tooltip" data-bs-title="Create a new event">New Event</button>
+
+<EventFormModal Visible="showEventForm"
+                IsEditMode="isEditMode"
+                EventModel="editingEvent"
+                DateInputText="dateInputText"
+                ShowDateValidation="showDateValidation"
+                IsDateValid="isDateValid"
+                OnDateChanged="OnDatePickerChanged"
+                OnSave="HandleEventSubmit"
+                OnCancel="CancelEventForm" />
+
+@if (events == null)
+{
+    <p>Loading events...</p>
+}
+else if (!events.Any())
+{
+    <p>No events found.</p>
+}
+else
+{
+    <EventsTable OnEditEvent="OnEditEvent"
+                 OnDeleteEvent="ShowDeleteModal"
+                 OnViewAttendees="ShowAttendeesModal"
+                 GetAttendeeCount="GetAttendeeCount"
+                 SortField="@sortField"
+                 SortAsc="@sortAsc"
+                 SearchName="@searchName"
+                 SearchDate="@searchDate"
+                 SearchLocation="@searchLocation"
+                 FilteredEvents="@GetFilteredEvents()"
+                 OnSortBy="@OnSortBy"
+                 GetSortIcon="@GetSortIcon"
+                 OnSearchChanged="@onSearchChangedCallback"
+                 OnClearSearch="@ClearSearch" />
+
+    <AttendeeListModal Visible="showAttendeesModal"
+                       EventName="@(attendeesEvent?.Name ?? string.Empty)"
+                       Attendees="eventAttendees"
+                       OnClose="CloseAttendeesModal"
+                       OnRegister="ShowRegistrationModalAsync"
+                       OnEdit="EditAttendeeRegistrationAsync"
+                       OnDelete="ShowRegistrationDeleteModalAsync" />
+
+    @if (showRegistrationModal && registrationEvent != null)
+    {
+        <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" aria-modal="true" role="dialog" @onclick="CloseRegistrationModal">
+            <div class="modal-dialog modal-lg" @onclick:stopPropagation="true">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">@(editingRegistration is null ? "Register Attendee" : "Edit Registration")</h5>
+                        <button type="button" class="btn-close" @onclick="CloseRegistrationModal" aria-label="Close" data-bs-toggle="tooltip" data-bs-title="Close registration form"></button>
+                    </div>
+                    <div class="modal-body">
+                        <AttendeeRegistrationForm EventId="registrationEvent.Id"
+                                                  EventName="registrationEvent.Name"
+                                                  InitialRegistration="editingRegistration"
+                                                  OnSaved="OnRegistrationSaved"
+                                                  OnCancel="CloseRegistrationModal"
+                                                  OnDeleteRequested="ShowRegistrationDeleteModal" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <ConfirmationModal Visible="showDeleteModal"
+                       Title="Confirm Delete"
+                       Message="@GetEventDeleteMessage()"
+                       ConfirmText="Delete"
+                       OnCancel="CloseDeleteModal"
+                       OnConfirm="ConfirmDelete" />
+
+    <ConfirmationModal Visible="showRegistrationDeleteModal"
+                       Title="Confirm Registration Delete"
+                       Message="@GetRegistrationDeleteMessage()"
+                       ConfirmText="Delete"
+                       OnCancel="CloseRegistrationDeleteModal"
+                       OnConfirm="ConfirmRegistrationDeleteAsync" />
+}

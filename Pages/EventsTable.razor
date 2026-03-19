@@ -1,0 +1,110 @@
+@using EventEaseApp.Models
+@inject TooltipService TooltipService
+
+@code {
+    [Parameter]
+    public EventCallback<Event> OnEditEvent { get; set; }
+
+    [Parameter]
+    public EventCallback<Event> OnDeleteEvent { get; set; }
+
+    [Parameter]
+    public EventCallback<Event> OnViewAttendees { get; set; }
+
+    [Parameter]
+    public Func<Event, int> GetAttendeeCount { get; set; } = _ => 0;
+
+    [Parameter]
+    public string SortField { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool SortAsc { get; set; }
+
+    [Parameter]
+    public string SearchName { get; set; } = string.Empty;
+
+    [Parameter]
+    public string SearchDate { get; set; } = string.Empty;
+
+    [Parameter]
+    public string SearchLocation { get; set; } = string.Empty;
+
+    [Parameter]
+    public IEnumerable<Event> FilteredEvents { get; set; } = Array.Empty<Event>();
+
+    [Parameter]
+    public EventCallback<string> OnSortBy { get; set; }
+
+    [Parameter]
+    public Func<string, string> GetSortIcon { get; set; } = _ => string.Empty;
+
+    [Parameter]
+    public EventCallback<(string field, string value)> OnSearchChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnClearSearch { get; set; }
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th @onclick="() => OnSortBy.InvokeAsync(nameof(Event.Name))" data-bs-toggle="tooltip" data-bs-title="Sort by event name">Name @GetSortIcon(nameof(Event.Name))</th>
+            <th @onclick="() => OnSortBy.InvokeAsync(nameof(Event.Date))" data-bs-toggle="tooltip" data-bs-title="Sort by event date">Date @GetSortIcon(nameof(Event.Date))</th>
+            <th @onclick="() => OnSortBy.InvokeAsync(nameof(Event.Location))" data-bs-toggle="tooltip" data-bs-title="Sort by event location">Location @GetSortIcon(nameof(Event.Location))</th>
+            <th>Actions</th>
+        </tr>
+        <tr>
+            <th><input class="form-control" value="@SearchName" @oninput="e => HandleSearchInput(nameof(Event.Name), e.Value?.ToString() ?? string.Empty)" placeholder="Search Name" data-bs-toggle="tooltip" data-bs-title="Filter events by name" /></th>
+            <th><input class="form-control" value="@SearchDate" @oninput="e => HandleSearchInput(nameof(Event.Date), e.Value?.ToString() ?? string.Empty)" placeholder="Search Date (MM/dd/yyyy)" data-bs-toggle="tooltip" data-bs-title="Filter events by date" /></th>
+            <th><input class="form-control" value="@SearchLocation" @oninput="e => HandleSearchInput(nameof(Event.Location), e.Value?.ToString() ?? string.Empty)" placeholder="Search Location" data-bs-toggle="tooltip" data-bs-title="Filter events by location" /></th>
+            <th class="text-start">
+                <button class="btn btn-outline-secondary btn-sm" @onclick="ClearSearchAsync" data-bs-toggle="tooltip" data-bs-title="Clear all search filters">Clear</button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (FilteredEvents.Any())
+        {
+            foreach (var evt in FilteredEvents)
+            {
+                <tr>
+                    <td>@(string.IsNullOrWhiteSpace(evt.Name) ? "(No Name)" : evt.Name)</td>
+                    <td>@(evt.Date != DateTime.MinValue ? evt.Date.ToString("MM/dd/yyyy") : "(No Date)")</td>
+                    <td>@(string.IsNullOrWhiteSpace(evt.Location) ? "(No Location)" : evt.Location)</td>
+                    <td>
+                        <button class="btn btn-info btn-sm me-1" @onclick="() => OnViewAttendees.InvokeAsync(evt)" data-bs-toggle="tooltip" data-bs-title="View attendees and register new attendees"><span class="bi bi-people-fill"></span> (@GetAttendeeCount(evt))</button>
+                        <button class="btn btn-secondary btn-sm me-1" @onclick="() => OnEditEvent.InvokeAsync(evt)" data-bs-toggle="tooltip" data-bs-title="Edit this event"><span class="bi bi-pencil"></span></button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => OnDeleteEvent.InvokeAsync(evt)" data-bs-toggle="tooltip" data-bs-title="Delete this event"><span class="bi bi-trash"></span></button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="4">No events to display.</td></tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return TooltipService.InitializeAsync().AsTask();
+    }
+
+    private async Task HandleSearchInput(string field, string value)
+    {
+        if (OnSearchChanged.HasDelegate)
+        {
+            await OnSearchChanged.InvokeAsync((field, value));
+        }
+    }
+
+    private async Task ClearSearchAsync()
+    {
+        if (OnClearSearch.HasDelegate)
+        {
+            await OnClearSearch.InvokeAsync();
+        }
+    }
+}
