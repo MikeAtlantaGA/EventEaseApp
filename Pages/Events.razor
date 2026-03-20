@@ -12,7 +12,7 @@
 <EventFormModal Visible="showEventForm"
                 IsEditMode="isEditMode"
                 EventModel="editingEvent"
-                DateInputText="dateInputText"
+                DateInputText="@dateInputText"
                 ShowDateValidation="showDateValidation"
                 IsDateValid="isDateValid"
                 OnDateChanged="OnDatePickerChanged"
@@ -63,7 +63,7 @@ else
                     </div>
                     <div class="modal-body">
                         <AttendeeRegistrationForm EventId="registrationEvent.Id"
-                                                  EventName="registrationEvent.Name"
+                                                  EventName="@registrationEvent.Name"
                                                   InitialRegistration="editingRegistration"
                                                   OnSaved="OnRegistrationSaved"
                                                   OnCancel="CloseRegistrationModal"
@@ -90,6 +90,8 @@ else
     
         <!-- Copilot README note: local only -->
             <div class="copilot-readme-note" style="margin-top:2rem; text-align:center; color:#555; font-size:1rem;">
-                Curious how this site was built? <a href="/readme"><strong>View the README</strong></a> to learn how Microsoft Copilot was used to create EventEase!
+                Curious how this site was built?<br />
+                Please <a href="https://github.com/MikeAtlantaGA/EventEaseApp" target="_blank" rel="noopener noreferrer"><strong>click here</strong></a> to view the code in the GitHub repository.<br />
+                You can also view the <a href="https://github.com/MikeAtlantaGA/EventEaseApp/blob/main/README.md" target="_blank" rel="noopener noreferrer"><strong>README.md file</strong></a> to see how I used the power of Microsoft Copilot to help create the site!
             </div>
 }

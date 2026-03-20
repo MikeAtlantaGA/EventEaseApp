@@ -43,6 +43,17 @@
 
     [Parameter]
     public EventCallback OnClearSearch { get; set; }
+
+    private string localSearchName = string.Empty;
+    private string localSearchDate = string.Empty;
+    private string localSearchLocation = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        localSearchName = SearchName;
+        localSearchDate = SearchDate;
+        localSearchLocation = SearchLocation;
+    }
 }
 
 <table class="table table-striped">
@@ -54,9 +65,9 @@
             <th>Actions</th>
         </tr>
         <tr>
-            <th><input class="form-control" value="@SearchName" @oninput="e => HandleSearchInput(nameof(Event.Name), e.Value?.ToString() ?? string.Empty)" placeholder="Search Name" data-bs-toggle="tooltip" data-bs-title="Filter events by name" /></th>
-            <th><input class="form-control" value="@SearchDate" @oninput="e => HandleSearchInput(nameof(Event.Date), e.Value?.ToString() ?? string.Empty)" placeholder="Search Date (MM/dd/yyyy)" data-bs-toggle="tooltip" data-bs-title="Filter events by date" /></th>
-            <th><input class="form-control" value="@SearchLocation" @oninput="e => HandleSearchInput(nameof(Event.Location), e.Value?.ToString() ?? string.Empty)" placeholder="Search Location" data-bs-toggle="tooltip" data-bs-title="Filter events by location" /></th>
+            <th><input class="form-control" value="@localSearchName" @oninput="e => HandleSearchInput(nameof(Event.Name), e.Value?.ToString() ?? string.Empty)" placeholder="Search Name" data-bs-toggle="tooltip" data-bs-title="Filter events by name" /></th>
+            <th><input class="form-control" value="@localSearchDate" @oninput="e => HandleSearchInput(nameof(Event.Date), e.Value?.ToString() ?? string.Empty)" placeholder="Search Date (MM/dd/yyyy)" data-bs-toggle="tooltip" data-bs-title="Filter events by date" /></th>
+            <th><input class="form-control" value="@localSearchLocation" @oninput="e => HandleSearchInput(nameof(Event.Location), e.Value?.ToString() ?? string.Empty)" placeholder="Search Location" data-bs-toggle="tooltip" data-bs-title="Filter events by location" /></th>
             <th class="text-start">
                 <button class="btn btn-outline-secondary btn-sm" @onclick="ClearSearchAsync" data-bs-toggle="tooltip" data-bs-title="Clear all search filters">Clear</button>
             </th>
@@ -94,6 +105,19 @@
 
     private async Task HandleSearchInput(string field, string value)
     {
+        switch (field)
+        {
+            case nameof(Event.Name):
+                localSearchName = value;
+                break;
+            case nameof(Event.Date):
+                localSearchDate = value;
+                break;
+            case nameof(Event.Location):
+                localSearchLocation = value;
+                break;
+        }
+
         if (OnSearchChanged.HasDelegate)
         {
             await OnSearchChanged.InvokeAsync((field, value));

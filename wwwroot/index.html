@@ -33,6 +33,24 @@
     <script>
         window.eventEase = window.eventEase || {};
 
+        window.eventEase.isTextEntryElement = (element) => {
+            if (!element) {
+                return false;
+            }
+
+            const tagName = element.tagName?.toLowerCase();
+            if (tagName === 'textarea') {
+                return true;
+            }
+
+            if (tagName !== 'input') {
+                return false;
+            }
+
+            const inputType = (element.getAttribute('type') || 'text').toLowerCase();
+            return !['button', 'checkbox', 'color', 'file', 'hidden', 'image', 'radio', 'range', 'reset', 'submit'].includes(inputType);
+        };
+
         window.eventEase.hideTooltip = (element) => {
             const tooltip = bootstrap.Tooltip.getInstance(element);
 
@@ -67,8 +85,10 @@
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
 
             tooltipTriggerList.forEach((element) => {
+                const isTextEntryElement = window.eventEase.isTextEntryElement(element);
+
                 bootstrap.Tooltip.getOrCreateInstance(element, {
-                    trigger: 'hover focus',
+                    trigger: isTextEntryElement ? 'hover' : 'hover focus',
                     container: 'body'
                 });
 
@@ -76,13 +96,15 @@
                     return;
                 }
 
-                element.addEventListener('click', () => {
-                    window.eventEase.hideTooltip(element);
+                if (!isTextEntryElement) {
+                    element.addEventListener('click', () => {
+                        window.eventEase.hideTooltip(element);
 
-                    if (typeof element.blur === 'function') {
-                        element.blur();
-                    }
-                });
+                        if (typeof element.blur === 'function') {
+                            element.blur();
+                        }
+                    });
+                }
 
                 element.addEventListener('mouseleave', () => {
                     window.eventEase.hideTooltip(element);
