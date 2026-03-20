@@ -1,0 +1,43 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ] # Change this to 'master' if your main branch uses that name
+
+permissions:
+  contents: write # Required for the action to push to the gh-pages branch
+
+jobs:
+  deploy-to-github-pages:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x' # Update to your .NET version (e.g., 8.0.x)
+
+    - name: Publish App
+      run: dotnet publish -c Release -o release
+
+    # Fixes the <base href="/" /> to match your GitHub repository subfolder
+    - name: Change base-tag in index.html to repo name
+      run: |
+        REPO_NAME=$(echo "${{ github.repository }}" | awk -F '/' '{print $NF}')
+        sed -i "s|<base href=\"/\" />|<base href=\"/$REPO_NAME/\" />|g" release/wwwroot/index.html
+
+    # Required for Blazor to work with GitHub's Jekyll engine (prevents ignoring _framework folder)
+    - name: Add .nojekyll file
+      run: touch release/wwwroot/.nojekyll
+
+    # Fixes routing issues for direct navigation to subpages
+    - name: Copy index.html to 404.html
+      run: cp release/wwwroot/index.html release/wwwroot/404.html
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: release/wwwroot
+        publish_branch: gh-pages
